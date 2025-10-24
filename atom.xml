@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Adore Blog</title>
+  <subtitle>Ciallo～(∠・ω< )⌒★</subtitle>
+  <link href="https://blog.adore33.top/" rel="alternate" type="text/html"/>
+  <link href="https://blog.adore33.top/atom.xml" rel="self" type="application/atom+xml"/>
+  <id>https://blog.adore33.top/</id>
+  <updated>2025-10-24T16:25:58.645Z</updated>
+  <language>zh_CN</language>
+  <entry>
+    <title>Git笔记(备忘向)</title>
+    <link href="https://blog.adore33.top/posts/markdown/" rel="alternate" type="text/html"/>
+    <id>https://blog.adore33.top/posts/markdown/</id>
+    <published>2025-10-25T00:00:00.000Z</published>
+    <updated>2025-10-25T00:00:00.000Z</updated>
+    <summary>对常用Git语法的总结</summary>
+    <content type="html"><![CDATA[<h1>Git</h1>
+<ul>
+<li><a href="#git">Git</a>
+<ul>
+<li><a href="#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C">基本操作</a>
+<ul>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93%E6%93%8D%E4%BD%9C">本地仓库操作</a>
+<ul>
+<li><a href="#%E6%9A%82%E5%AD%98%E7%B1%BB">暂存类</a></li>
+<li><a href="#%E6%8F%90%E4%BA%A4%E7%B1%BB">提交类</a></li>
+<li><a href="#%E7%8A%B6%E6%80%81%E7%B1%BB">状态类</a></li>
+<li><a href="#%E5%88%86%E6%94%AF%E7%B1%BB">分支类</a></li>
+</ul>
+</li>
+<li><a href="#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E6%93%8D%E4%BD%9C">远程仓库操作</a>
+<ul>
+<li><a href="#push%E7%B1%BB">Push类</a></li>
+<li><a href="#pull%E7%B1%BB">Pull类</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#%E7%AE%A1%E7%90%86%E6%96%B9%E6%B3%95">管理方法</a>
+<ul>
+<li><a href="#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86">分支管理</a></li>
+<li><a href="#%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86">本地仓库管理</a></li>
+<li><a href="#%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E7%AE%A1%E7%90%86">多人协作管理</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2>基本操作</h2>
+<h3>本地仓库操作</h3>
+<h4>暂存类</h4>
+<p>1.git add (参数) //将文件添加到暂存区</p>
+<ul>
+<li>"."表示全部文件，文件名表示单个文件</li>
+<li>"文件夹名"表示整个文件夹</li>
+<li>"-a/--all"过的文件全部添加到暂存区</li>
+</ul>
+<p>2.git reset 分支名 (文件名) //将文件从暂存区移除</p>
+<hr />
+<h4>提交类</h4>
+<p>1.git commit -m "提交信息" //提交暂存区到本地仓库</p>
+<hr />
+<h4>状态类</h4>
+<p>1.git status //查看当前仓库状态</p>
+<p>2.git log (参数) //查看提交历史</p>
+<ul>
+<li>-p (次数) 显示每次提交的差异</li>
+<li>-stat 以统计信息的形式显示每次提交的差异</li>
+<li>--graph 以图形化的形式显示提交历史</li>
+<li>--pretty=(参数) 自定义显示格式
+常见参数：
+<ul>
+<li>oneline：每次提交显示为一行</li>
+<li>short：简短格式</li>
+<li>full：完整格式</li>
+<li>fuller：更完整格式</li>
+<li>format:(自定义格式)
+常见格式：
+<ul>
+<li>%H：提交对象的完整哈希值</li>
+<li>%h：提交对象的简短哈希值</li>
+<li>%an：作者名称</li>
+<li>%ae：作者邮箱</li>
+<li>%ad：作者日期（可以通过 --date= 选项自定义格式）</li>
+<li>%s：提交说明</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>3.git tag (参数) //仓库标签</p>
+<ul>
+<li>-a (标签) -m "信息" //附注标签</li>
+<li>(标签) //轻量标签</li>
+<li>-a (标签) 哈希值 //后期打标签</li>
+<li>-d (标签) 删除标签</li>
+</ul>
+<p>4.git reset (参数) (哈希值) //回退到指定版本(配合git reflog使用可以找回误删版本)</p>
+<ul>
+<li>--hard：撤销所有修改</li>
+<li>--soft：只撤销commit</li>
+<li>--mixed：撤销commit和暂存区修改</li>
+</ul>
+<hr />
+<h4>分支类</h4>
+<p>1.git branch (分支名) (远程分支) //创建分支(设置跟踪远程分支)</p>
+<p>2.git checkout (分支名) //切换分支</p>
+<p>3.git branch -d (分支名) //删除分支</p>
+<p>4.git branch -m (旧分支名) (新分支名) //重命名分支</p>
+<p>5.git merge (分支名) //合并分支</p>
+<p>6.git branch --set-upstream-to=(主机名)/(远程分支名) //设置本地分支与远程分支的对应关系</p>
+<p>6.git rebase (分支名) //变基操作</p>
+<p>7.git fetch (主机名) //获取远程分支到本地</p>
+<p>8.git branch -vv //查看本地分支与远程分支的对应关系</p>
+<hr />
+<h3>远程仓库操作</h3>
+<h4>Push类</h4>
+<p>1.git push (主机名) (当前分支名):(远程分支名) //推送当前分支到远程分支</p>
+<p>2.git push (主机名) --delete (分支名) //删除远程分支</p>
+<p>3.git push (主机名) (标签名)/--tags //共享特定/全部标签</p>
+<p>4.git push (主机名) --delete (标签) //删除远程仓库标签</p>
+<hr />
+<h4>Pull类</h4>
+<p>1.git pull (主机名) (分支名) //拉取远程分支并合并到当前分支</p>
+<hr />
+<h2>管理方法</h2>
+<h3>分支管理</h3>
+<ul>
+<li>分支开发工作流：在master上保存稳定代码，在develop分支上进行日常开发，功能开发在feature分支上进行，完成后合并到develop分支，发布版本时从develop分支合并到master分支</li>
+<li>合并管理：合并有时会冲突，需要用git status找到并手动解决冲突</li>
+<li>变基管理：变基可以让提交历史更清晰，但会改变提交历史，慎用</li>
+</ul>
+<hr />
+<h3>本地仓库管理</h3>
+<ul>
+<li>用.gitignore文件忽略不需要版本控制的文件</li>
+</ul>
+<hr />
+<h3>多人协作管理</h3>
+<ul>
+<li>注意给本地对应分支设置跟踪远程分支</li>
+</ul>
+]]></content>
+    <author>
+      <name>AdoreATRI</name>
+    </author>
+    <category term="Note"></category>
+  </entry>
+  <entry>
+    <title>Simple Guides for Mizuki</title>
+    <link href="https://blog.adore33.top/posts/guide/" rel="alternate" type="text/html"/>
+    <id>https://blog.adore33.top/posts/guide/</id>
+    <published>2024-04-01T00:00:00.000Z</published>
+    <updated>2024-04-01T00:00:00.000Z</updated>
+    <summary>How to use this blog template.</summary>
+    <content type="html"><![CDATA[<p>This blog template is built with <a href="https://astro.build/">Astro</a>. For the things that are not mentioned in this guide, you may find the answers in the <a href="https://docs.astro.build/">Astro Docs</a>.</p>
+<h2>Front-matter of Posts</h2>
+<pre><code>---
+title: My First Blog Post
+published: 2023-09-09
+description: This is the first post of my new Astro blog.
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: Front-end
+draft: false
+---
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Attribute</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>title</code></td>
+<td>The title of the post.</td>
+</tr>
+<tr>
+<td><code>published</code></td>
+<td>The date the post was published.</td>
+</tr>
+<tr>
+<td><code>pinned</code></td>
+<td>Whether this post is pinned to the top of the post list.</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td>A short description of the post. Displayed on index page.</td>
+</tr>
+<tr>
+<td><code>image</code></td>
+<td>The cover image path of the post.&lt;br/&gt;1. Start with <code>http://</code> or <code>https://</code>: Use web image&lt;br/&gt;2. Start with <code>/</code>: For image in <code>public</code> dir&lt;br/&gt;3. With none of the prefixes: Relative to the markdown file</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td>The tags of the post.</td>
+</tr>
+<tr>
+<td><code>category</code></td>
+<td>The category of the post.</td>
+</tr>
+<tr>
+<td><code>licenseName</code></td>
+<td>The license name for the post content.</td>
+</tr>
+<tr>
+<td><code>author</code></td>
+<td>The author of the post.</td>
+</tr>
+<tr>
+<td><code>sourceLink</code></td>
+<td>The source link or reference for the post content.</td>
+</tr>
+<tr>
+<td><code>draft</code></td>
+<td>If this post is still a draft, which won't be displayed.</td>
+</tr>
+</tbody>
+</table>
+<h2>Where to Place the Post Files</h2>
+<p>Your post files should be placed in <code>src/content/posts/</code> directory. You can also create sub-directories to better organize your posts and assets.</p>
+<pre><code>src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.png
+    └── index.md
+</code></pre>
+]]></content>
+    <author>
+      <name>AdoreATRI</name>
+    </author>
+    <category term="Guides"></category>
+  </entry>
+</feed>

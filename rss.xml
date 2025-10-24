@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Adore Blog</title><description>Ciallo～(∠・ω&lt; )⌒★</description><link>https://blog.adore33.top/</link><language>zh_CN</language><item><title>Git笔记(备忘向)</title><link>https://blog.adore33.top/posts/markdown/</link><guid isPermaLink="true">https://blog.adore33.top/posts/markdown/</guid><description>对常用Git语法的总结</description><pubDate>Sat, 25 Oct 2025 00:00:00 GMT</pubDate><content:encoded>&lt;h1&gt;Git&lt;/h1&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#git&quot;&gt;Git&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%E5%9F%BA%E6%9C%AC%E6%93%8D%E4%BD%9C&quot;&gt;基本操作&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93%E6%93%8D%E4%BD%9C&quot;&gt;本地仓库操作&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%E6%9A%82%E5%AD%98%E7%B1%BB&quot;&gt;暂存类&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E6%8F%90%E4%BA%A4%E7%B1%BB&quot;&gt;提交类&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E7%8A%B6%E6%80%81%E7%B1%BB&quot;&gt;状态类&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E5%88%86%E6%94%AF%E7%B1%BB&quot;&gt;分支类&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E8%BF%9C%E7%A8%8B%E4%BB%93%E5%BA%93%E6%93%8D%E4%BD%9C&quot;&gt;远程仓库操作&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#push%E7%B1%BB&quot;&gt;Push类&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#pull%E7%B1%BB&quot;&gt;Pull类&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E7%AE%A1%E7%90%86%E6%96%B9%E6%B3%95&quot;&gt;管理方法&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;#%E5%88%86%E6%94%AF%E7%AE%A1%E7%90%86&quot;&gt;分支管理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E6%9C%AC%E5%9C%B0%E4%BB%93%E5%BA%93%E7%AE%A1%E7%90%86&quot;&gt;本地仓库管理&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;#%E5%A4%9A%E4%BA%BA%E5%8D%8F%E4%BD%9C%E7%AE%A1%E7%90%86&quot;&gt;多人协作管理&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;基本操作&lt;/h2&gt;
+&lt;h3&gt;本地仓库操作&lt;/h3&gt;
+&lt;h4&gt;暂存类&lt;/h4&gt;
+&lt;p&gt;1.git add (参数) //将文件添加到暂存区&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&quot;.&quot;表示全部文件，文件名表示单个文件&lt;/li&gt;
+&lt;li&gt;&quot;文件夹名&quot;表示整个文件夹&lt;/li&gt;
+&lt;li&gt;&quot;-a/--all&quot;过的文件全部添加到暂存区&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;2.git reset 分支名 (文件名) //将文件从暂存区移除&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h4&gt;提交类&lt;/h4&gt;
+&lt;p&gt;1.git commit -m &quot;提交信息&quot; //提交暂存区到本地仓库&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h4&gt;状态类&lt;/h4&gt;
+&lt;p&gt;1.git status //查看当前仓库状态&lt;/p&gt;
+&lt;p&gt;2.git log (参数) //查看提交历史&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;-p (次数) 显示每次提交的差异&lt;/li&gt;
+&lt;li&gt;-stat 以统计信息的形式显示每次提交的差异&lt;/li&gt;
+&lt;li&gt;--graph 以图形化的形式显示提交历史&lt;/li&gt;
+&lt;li&gt;--pretty=(参数) 自定义显示格式
+常见参数：
+&lt;ul&gt;
+&lt;li&gt;oneline：每次提交显示为一行&lt;/li&gt;
+&lt;li&gt;short：简短格式&lt;/li&gt;
+&lt;li&gt;full：完整格式&lt;/li&gt;
+&lt;li&gt;fuller：更完整格式&lt;/li&gt;
+&lt;li&gt;format:(自定义格式)
+常见格式：
+&lt;ul&gt;
+&lt;li&gt;%H：提交对象的完整哈希值&lt;/li&gt;
+&lt;li&gt;%h：提交对象的简短哈希值&lt;/li&gt;
+&lt;li&gt;%an：作者名称&lt;/li&gt;
+&lt;li&gt;%ae：作者邮箱&lt;/li&gt;
+&lt;li&gt;%ad：作者日期（可以通过 --date= 选项自定义格式）&lt;/li&gt;
+&lt;li&gt;%s：提交说明&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;3.git tag (参数) //仓库标签&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;-a (标签) -m &quot;信息&quot; //附注标签&lt;/li&gt;
+&lt;li&gt;(标签) //轻量标签&lt;/li&gt;
+&lt;li&gt;-a (标签) 哈希值 //后期打标签&lt;/li&gt;
+&lt;li&gt;-d (标签) 删除标签&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;4.git reset (参数) (哈希值) //回退到指定版本(配合git reflog使用可以找回误删版本)&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;--hard：撤销所有修改&lt;/li&gt;
+&lt;li&gt;--soft：只撤销commit&lt;/li&gt;
+&lt;li&gt;--mixed：撤销commit和暂存区修改&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h4&gt;分支类&lt;/h4&gt;
+&lt;p&gt;1.git branch (分支名) (远程分支) //创建分支(设置跟踪远程分支)&lt;/p&gt;
+&lt;p&gt;2.git checkout (分支名) //切换分支&lt;/p&gt;
+&lt;p&gt;3.git branch -d (分支名) //删除分支&lt;/p&gt;
+&lt;p&gt;4.git branch -m (旧分支名) (新分支名) //重命名分支&lt;/p&gt;
+&lt;p&gt;5.git merge (分支名) //合并分支&lt;/p&gt;
+&lt;p&gt;6.git branch --set-upstream-to=(主机名)/(远程分支名) //设置本地分支与远程分支的对应关系&lt;/p&gt;
+&lt;p&gt;6.git rebase (分支名) //变基操作&lt;/p&gt;
+&lt;p&gt;7.git fetch (主机名) //获取远程分支到本地&lt;/p&gt;
+&lt;p&gt;8.git branch -vv //查看本地分支与远程分支的对应关系&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h3&gt;远程仓库操作&lt;/h3&gt;
+&lt;h4&gt;Push类&lt;/h4&gt;
+&lt;p&gt;1.git push (主机名) (当前分支名):(远程分支名) //推送当前分支到远程分支&lt;/p&gt;
+&lt;p&gt;2.git push (主机名) --delete (分支名) //删除远程分支&lt;/p&gt;
+&lt;p&gt;3.git push (主机名) (标签名)/--tags //共享特定/全部标签&lt;/p&gt;
+&lt;p&gt;4.git push (主机名) --delete (标签) //删除远程仓库标签&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h4&gt;Pull类&lt;/h4&gt;
+&lt;p&gt;1.git pull (主机名) (分支名) //拉取远程分支并合并到当前分支&lt;/p&gt;
+&lt;hr /&gt;
+&lt;h2&gt;管理方法&lt;/h2&gt;
+&lt;h3&gt;分支管理&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;分支开发工作流：在master上保存稳定代码，在develop分支上进行日常开发，功能开发在feature分支上进行，完成后合并到develop分支，发布版本时从develop分支合并到master分支&lt;/li&gt;
+&lt;li&gt;合并管理：合并有时会冲突，需要用git status找到并手动解决冲突&lt;/li&gt;
+&lt;li&gt;变基管理：变基可以让提交历史更清晰，但会改变提交历史，慎用&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h3&gt;本地仓库管理&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;用.gitignore文件忽略不需要版本控制的文件&lt;/li&gt;
+&lt;/ul&gt;
+&lt;hr /&gt;
+&lt;h3&gt;多人协作管理&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;注意给本地对应分支设置跟踪远程分支&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>Simple Guides for Mizuki</title><link>https://blog.adore33.top/posts/guide/</link><guid isPermaLink="true">https://blog.adore33.top/posts/guide/</guid><description>How to use this blog template.</description><pubDate>Mon, 01 Apr 2024 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;This blog template is built with &lt;a href=&quot;https://astro.build/&quot;&gt;Astro&lt;/a&gt;. For the things that are not mentioned in this guide, you may find the answers in the &lt;a href=&quot;https://docs.astro.build/&quot;&gt;Astro Docs&lt;/a&gt;.&lt;/p&gt;
+&lt;h2&gt;Front-matter of Posts&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;---
+title: My First Blog Post
+published: 2023-09-09
+description: This is the first post of my new Astro blog.
+image: ./cover.jpg
+tags: [Foo, Bar]
+category: Front-end
+draft: false
+---
+&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Attribute&lt;/th&gt;
+&lt;th&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;title&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The title of the post.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;published&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The date the post was published.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;pinned&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Whether this post is pinned to the top of the post list.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;description&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;A short description of the post. Displayed on index page.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;image&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The cover image path of the post.&amp;lt;br/&amp;gt;1. Start with &lt;code&gt;http://&lt;/code&gt; or &lt;code&gt;https://&lt;/code&gt;: Use web image&amp;lt;br/&amp;gt;2. Start with &lt;code&gt;/&lt;/code&gt;: For image in &lt;code&gt;public&lt;/code&gt; dir&amp;lt;br/&amp;gt;3. With none of the prefixes: Relative to the markdown file&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;tags&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The tags of the post.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;category&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The category of the post.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;licenseName&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The license name for the post content.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;author&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The author of the post.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;sourceLink&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;The source link or reference for the post content.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;draft&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;If this post is still a draft, which won&apos;t be displayed.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;Where to Place the Post Files&lt;/h2&gt;
+&lt;p&gt;Your post files should be placed in &lt;code&gt;src/content/posts/&lt;/code&gt; directory. You can also create sub-directories to better organize your posts and assets.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;src/content/posts/
+├── post-1.md
+└── post-2/
+    ├── cover.png
+    └── index.md
+&lt;/code&gt;&lt;/pre&gt;
+</content:encoded></item></channel></rss>
