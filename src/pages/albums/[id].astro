@@ -191,83 +191,76 @@ if (!album) {
 	</style>
 
 	<!-- ========== 图片查看器脚本 ========== -->
-	<script>
+	<script is:inline>
 		// 等待 DOM 加载完成
-		document.addEventListener('DOMContentLoaded', () => {
+		function initPhotoViewer() {
 			const photoItems = document.querySelectorAll('.photo-item');
+			console.log('找到照片数量:', photoItems.length); // 调试信息
 			
 			// 为每张照片添加点击事件
-			photoItems.forEach((item) => {
-				item.addEventListener('click', () => {
-					const imgSrc = item.getAttribute('data-src');
+			photoItems.forEach((item, idx) => {
+				item.addEventListener('click', function() {
+					console.log('点击了照片:', idx); // 调试信息
+					const imgSrc = this.getAttribute('data-src');
+					console.log('图片路径:', imgSrc); // 调试信息
+					
 					if (imgSrc) {
 						// 创建全屏遮罩层
 						const overlay = document.createElement('div');
-						overlay.className = 'fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 cursor-pointer';
-						overlay.style.animation = 'fadeIn 0.2s ease-out';
+						overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;cursor:pointer;';
 						
 						// 创建关闭按钮
 						const closeBtn = document.createElement('button');
 						closeBtn.innerHTML = '✕';
-						closeBtn.className = 'fixed top-4 right-4 z-[60] w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-2xl rounded-full transition-all duration-200 backdrop-blur-sm';
-						closeBtn.onclick = (e) => {
+						closeBtn.style.cssText = 'position:fixed;top:1rem;right:1rem;z-index:10000;width:2.5rem;height:2.5rem;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,0.1);color:white;font-size:1.5rem;border-radius:50%;border:none;cursor:pointer;transition:all 0.2s;';
+						closeBtn.onmouseover = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
+						closeBtn.onmouseout = () => closeBtn.style.background = 'rgba(255,255,255,0.1)';
+						closeBtn.onclick = function(e) {
 							e.stopPropagation();
-							overlay.style.animation = 'fadeOut 0.2s ease-out';
-							setTimeout(() => overlay.remove(), 200);
+							document.body.removeChild(overlay);
+							document.body.style.overflow = '';
 						};
-						
-						// 创建加载提示
-						const loader = document.createElement('div');
-						loader.className = 'absolute text-white text-sm';
-						loader.textContent = '加载中...';
 						
 						// 创建大图
 						const largeImg = document.createElement('img');
 						largeImg.src = imgSrc;
-						largeImg.className = 'max-w-full max-h-full object-contain opacity-0 transition-opacity duration-300';
-						
-						// 图片加载完成后显示
-						largeImg.onload = () => {
-							loader.remove();
-							largeImg.style.opacity = '1';
-						};
-						
-						// 阻止图片点击事件冒泡
+						largeImg.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;';
 						largeImg.onclick = (e) => e.stopPropagation();
 						
 						// 点击遮罩层关闭
-						overlay.onclick = () => {
-							overlay.style.animation = 'fadeOut 0.2s ease-out';
-							setTimeout(() => overlay.remove(), 200);
+						overlay.onclick = function() {
+							document.body.removeChild(overlay);
+							document.body.style.overflow = '';
 						};
 						
 						// 键盘 ESC 关闭
-						const handleKeyPress = (e) => {
+						const handleKeyPress = function(e) {
 							if (e.key === 'Escape') {
-								overlay.style.animation = 'fadeOut 0.2s ease-out';
-								setTimeout(() => overlay.remove(), 200);
+								document.body.removeChild(overlay);
+								document.body.style.overflow = '';
 								document.removeEventListener('keydown', handleKeyPress);
 							}
 						};
 						document.addEventListener('keydown', handleKeyPress);
 						
 						// 组装元素
-						overlay.appendChild(loader);
 						overlay.appendChild(largeImg);
 						overlay.appendChild(closeBtn);
 						document.body.appendChild(overlay);
 						
 						// 防止页面滚动
 						document.body.style.overflow = 'hidden';
-						
-						// 关闭时恢复滚动
-						overlay.addEventListener('remove', () => {
-							document.body.style.overflow = '';
-						});
 					}
 				});
 			});
-		});
+		}
+		
+		// 页面加载时初始化
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', initPhotoViewer);
+		} else {
+			initPhotoViewer();
+		}
 	</script>
 
 	<!-- 动画样式 -->

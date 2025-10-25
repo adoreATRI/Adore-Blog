@@ -47,7 +47,7 @@ export const zh_CN: Translation = {
 
 	// 番剧页面
 	[Key.animeTitle]: "galgame大神之旅",
-	[Key.animeSubtitle]: "那份炫目未曾忘却",
+	[Key.animeSubtitle]: "无论何时，我都会记得夏天的蓝……。",
 	[Key.animeStatusWatching]: "在看",
 	[Key.animeStatusCompleted]: "看过",
 	[Key.animeStatusPlanned]: "想看",
@@ -81,7 +81,7 @@ export const zh_CN: Translation = {
 
 	// 相册页面
 	[Key.albums]: "相册",
-	[Key.albumsSubtitle]: "记录生活中的美好瞬间",
+	[Key.albumsSubtitle]: "唯有那份炫目，未曾忘却",
 	[Key.albumsEmpty]: "暂无内容",
 	[Key.albumsEmptyDesc]: "还没有创建任何相册，快去添加一些美好的回忆吧！",
 	[Key.albumsBackToList]: "返回相册",
