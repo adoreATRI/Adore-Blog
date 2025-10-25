@@ -205,9 +205,19 @@ if (!album) {
 					console.log('图片路径:', imgSrc); // 调试信息
 					
 					if (imgSrc) {
+						// 缩放控制变量
+						let scale = 1;
+						let isDragging = false;
+						let startX = 0, startY = 0;
+						let translateX = 0, translateY = 0;
+						
 						// 创建全屏遮罩层
 						const overlay = document.createElement('div');
-						overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;cursor:pointer;';
+						overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;overflow:hidden;';
+						
+						// 创建图片容器（用于缩放和拖拽）
+						const imgContainer = document.createElement('div');
+						imgContainer.style.cssText = 'position:relative;transition:transform 0.1s ease-out;cursor:grab;';
 						
 						// 创建关闭按钮
 						const closeBtn = document.createElement('button');
@@ -221,16 +231,78 @@ if (!album) {
 							document.body.style.overflow = '';
 						};
 						
+						// 创建缩放提示
+						const zoomHint = document.createElement('div');
+						zoomHint.style.cssText = 'position:fixed;bottom:1rem;left:50%;transform:translateX(-50%);z-index:10000;padding:0.5rem 1rem;background:rgba(255,255,255,0.1);color:white;font-size:0.875rem;border-radius:0.5rem;pointer-events:none;';
+						zoomHint.textContent = '滚轮缩放 | 拖拽移动 | 双击重置';
+						
 						// 创建大图
 						const largeImg = document.createElement('img');
 						largeImg.src = imgSrc;
-						largeImg.style.cssText = 'max-width:100%;max-height:100%;object-fit:contain;';
-						largeImg.onclick = (e) => e.stopPropagation();
+						largeImg.style.cssText = 'max-width:90vw;max-height:90vh;object-fit:contain;user-select:none;pointer-events:none;';
 						
-						// 点击遮罩层关闭
-						overlay.onclick = function() {
-							document.body.removeChild(overlay);
-							document.body.style.overflow = '';
+						// 更新变换
+						function updateTransform() {
+							imgContainer.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+						}
+						
+						// 滚轮缩放
+						const handleWheel = function(e) {
+							e.preventDefault();
+							const delta = e.deltaY > 0 ? -0.1 : 0.1;
+							const newScale = Math.min(Math.max(0.5, scale + delta), 5); // 限制缩放范围 0.5-5倍
+							
+							if (newScale !== scale) {
+								scale = newScale;
+								updateTransform();
+								
+								// 更新提示文字
+								zoomHint.textContent = `${Math.round(scale * 100)}% | 拖拽移动 | 双击重置`;
+							}
+						};
+						
+						// 鼠标拖拽
+						imgContainer.onmousedown = function(e) {
+							if (scale > 1) {
+								isDragging = true;
+								startX = e.clientX - translateX;
+								startY = e.clientY - translateY;
+								imgContainer.style.cursor = 'grabbing';
+								imgContainer.style.transition = 'none';
+								e.preventDefault();
+							}
+						};
+						
+						overlay.onmousemove = function(e) {
+							if (isDragging) {
+								translateX = e.clientX - startX;
+								translateY = e.clientY - startY;
+								updateTransform();
+							}
+						};
+						
+						overlay.onmouseup = function() {
+							isDragging = false;
+							imgContainer.style.cursor = 'grab';
+							imgContainer.style.transition = 'transform 0.1s ease-out';
+						};
+						
+						// 双击重置
+						imgContainer.ondblclick = function(e) {
+							e.stopPropagation();
+							scale = 1;
+							translateX = 0;
+							translateY = 0;
+							updateTransform();
+							zoomHint.textContent = '滚轮缩放 | 拖拽移动 | 双击重置';
+						};
+						
+						// 点击遮罩层关闭（只有在未缩放时）
+						overlay.onclick = function(e) {
+							if (e.target === overlay && scale === 1) {
+								document.body.removeChild(overlay);
+								document.body.style.overflow = '';
+							}
 						};
 						
 						// 键盘 ESC 关闭
@@ -243,13 +315,24 @@ if (!album) {
 						};
 						document.addEventListener('keydown', handleKeyPress);
 						
+						// 监听滚轮事件
+						overlay.addEventListener('wheel', handleWheel, { passive: false });
+						
 						// 组装元素
-						overlay.appendChild(largeImg);
+						imgContainer.appendChild(largeImg);
+						overlay.appendChild(imgContainer);
 						overlay.appendChild(closeBtn);
+						overlay.appendChild(zoomHint);
 						document.body.appendChild(overlay);
 						
 						// 防止页面滚动
 						document.body.style.overflow = 'hidden';
+						
+						// 3秒后隐藏提示
+						setTimeout(() => {
+							zoomHint.style.opacity = '0';
+							zoomHint.style.transition = 'opacity 0.3s';
+						}, 3000);
 					}
 				});
 			});
