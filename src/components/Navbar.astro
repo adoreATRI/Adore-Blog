@@ -21,6 +21,14 @@ const navbarTransparentMode =
 // 检查是否为首页
 const isHomePage = Astro.url.pathname === "/" || Astro.url.pathname === "";
 
+// 过滤函数：根据 featurePages 配置过滤链接
+function shouldShowLink(preset: LinkPreset): boolean {
+	if (preset === LinkPreset.Diary && !siteConfig.featurePages.diary) return false;
+	if (preset === LinkPreset.Friends && !siteConfig.featurePages.friends) return false;
+	if (preset === LinkPreset.Anime && !siteConfig.featurePages.anime) return false;
+	return true;
+}
+
 let links: NavBarLink[] = navBarConfig.links.map(
 	(item: NavBarLink | LinkPreset): NavBarLink => {
 		if (typeof item === "number") {
@@ -28,7 +36,21 @@ let links: NavBarLink[] = navBarConfig.links.map(
 		}
 		return item;
 	},
-);
+).map((link: NavBarLink) => {
+	// 如果有子菜单，过滤子菜单项
+	if (link.children && link.children.length > 0) {
+		return {
+			...link,
+			children: link.children.filter((child) => {
+				if (typeof child === "number") {
+					return shouldShowLink(child);
+				}
+				return true;
+			})
+		};
+	}
+	return link;
+});
 ---
 <div id="navbar" class="z-50 onload-animation" data-transparent-mode={navbarTransparentMode} data-is-home={isHomePage}>
     <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"></div> <!-- used for onload animation -->
