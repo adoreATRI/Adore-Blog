@@ -255,7 +255,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/adore.webp", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
+	avatar: "assets/images/adore.jpg", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
 	name: "AdoreATRI",
 	bio: "我可是高性能的！",
 	typewriter: {
