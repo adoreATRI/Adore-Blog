@@ -36,7 +36,7 @@ let currentTime = 0;
 // 歌曲总时长，默认为 0
 let duration = 0;
 // 音量，默认为 0.7
-let volume = 0.7;
+let volume = 1;
 // 是否静音，默认为 false
 let isMuted = false;
 // 是否正在加载，默认为 false
@@ -68,7 +68,7 @@ let volumeBar: HTMLElement;
 const localPlaylist = [
 	{
 		id: 1,
-		title: "- Candy a Mine",
+		title: "Candy a Mine",
 		artist: "茶太",
 		cover: "assets/music/cover/Candy a Mine.webp",
 		url: "assets/music/url/茶太 - Candy a Mine.mp3",
