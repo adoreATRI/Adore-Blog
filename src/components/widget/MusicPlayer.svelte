@@ -72,7 +72,7 @@ const localPlaylist = [
 		artist: "茶太",
 		cover: "assets/music/cover/Candy a Mine.webp",
 		url: "assets/music/url/茶太 - Candy a Mine.mp3",
-		duration: 307,
+		duration: 0,
 	},
 ];
 
