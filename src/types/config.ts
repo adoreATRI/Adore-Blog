@@ -220,6 +220,11 @@ export type AnnouncementConfig = {
 
 export type MusicPlayerConfig = {
 	enable: boolean; // 是否启用音乐播放器功能
+	mode?: "local" | "meting"; // 播放模式: local(本地) | meting(在线)
+	server?: string; // 音乐平台: netease | tencent | kugou 等
+	type?: string; // 类型: playlist | song | album
+	id?: string; // 歌单/歌曲/专辑 ID
+	meting_api?: string; // Meting API 地址
 };
 
 export type FooterConfig = {

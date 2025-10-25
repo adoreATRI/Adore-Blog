@@ -255,7 +255,7 @@ export const navBarConfig: NavBarConfig = {
 };
 
 export const profileConfig: ProfileConfig = {
-	avatar: "assets/images/adore.png", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
+	avatar: "assets/images/呆唯.webp", // 相对于 /src 目录。如果以 '/' 开头，则相对于 /public 目录
 	name: "AdoreATRI",
 	bio: "我可是高性能的！",
 	typewriter: {
@@ -307,7 +307,7 @@ export const commentConfig: CommentConfig = {
 };
 
 export const announcementConfig: AnnouncementConfig = {
-	title: "Announcement", // 公告标题
+	title: "公告", // 公告标题
 	content: "欢迎来到我的小窝", // 公告内容
 	closable: true, // 允许用户关闭公告
 	link: {
@@ -320,6 +320,7 @@ export const announcementConfig: AnnouncementConfig = {
 
 export const musicPlayerConfig: MusicPlayerConfig = {
 	enable: true, // 启用音乐播放器功能
+	mode: "local", // 播放模式: local(本地) | meting(在线)
 };
 
 export const footerConfig: FooterConfig = {
