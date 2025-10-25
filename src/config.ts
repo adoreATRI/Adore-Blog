@@ -33,7 +33,7 @@ export const siteConfig: SiteConfig = {
 	// 特色页面开关配置(关闭不在使用的页面有助于提升SEO,关闭后直接在顶部导航删除对应的页面就行)
 	featurePages: {
 		anime: true, // 番剧页面开关
-		diary: true, // 日记页面开关
+		diary: false, // 日记页面开关
 		friends: false, // 友链页面开关
 		projects: true, // 项目页面开关
 		skills: true, // 技能页面开关
@@ -185,7 +185,7 @@ export const navBarConfig: NavBarConfig = {
 		LinkPreset.Archive,
 		// 支持自定义导航栏链接,并且支持多级菜单,3.1版本新加
 		{
-			name: "Links",
+			name: "链接",
 			url: "/links/",
 			icon: "material-symbols:link",
 			children: [

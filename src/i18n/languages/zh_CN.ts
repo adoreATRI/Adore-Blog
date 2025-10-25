@@ -3,7 +3,7 @@ import type { Translation } from "../translation";
 
 export const zh_CN: Translation = {
 	[Key.home]: "主页",
-	[Key.about]: "关于我们",
+	[Key.about]: "关于我的小窝",
 	[Key.archive]: "归档",
 	[Key.search]: "搜索",
 	[Key.other]: "其他",
@@ -42,12 +42,12 @@ export const zh_CN: Translation = {
 	[Key.author]: "作者",
 	[Key.publishedAt]: "发布于",
 	[Key.license]: "许可协议",
-	[Key.anime]: "追番",
+	[Key.anime]: "游戏",
 	[Key.diary]: "日记",
 
 	// 番剧页面
-	[Key.animeTitle]: "我的追番记录",
-	[Key.animeSubtitle]: "记录我的二次元之旅",
+	[Key.animeTitle]: "galgame大神之旅",
+	[Key.animeSubtitle]: "那份炫目未曾忘却",
 	[Key.animeStatusWatching]: "在看",
 	[Key.animeStatusCompleted]: "看过",
 	[Key.animeStatusPlanned]: "想看",
@@ -56,7 +56,7 @@ export const zh_CN: Translation = {
 	[Key.animeFilterAll]: "全部",
 	[Key.animeYear]: "年份",
 	[Key.animeStudio]: "制作",
-	[Key.animeEmpty]: "暂无追番数据",
+	[Key.animeEmpty]: "暂无数据",
 	[Key.animeEmptyBangumi]: "请检查 Bangumi 配置或网络连接",
 	[Key.animeEmptyLocal]: "请在 src/data/anime.ts 文件中添加番剧信息",
 
