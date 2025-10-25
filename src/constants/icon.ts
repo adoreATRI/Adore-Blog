@@ -17,7 +17,7 @@ export const defaultFavicons: Favicon[] = [
 		sizes: "180x180",
 	}, */
 	{
-		src: "/favicon/呆唯.jpg",
+		src: "/favicon/呆唯.webp",
 		theme: "light",
 		sizes: "192x192",
 	},
@@ -37,7 +37,7 @@ export const defaultFavicons: Favicon[] = [
 		sizes: "180x180",
 	}, */
 	{
-		src: "/favicon/呆唯.jpg",
+		src: "/favicon/呆唯.webp",
 		theme: "dark",
 		sizes: "192x192",
 	},

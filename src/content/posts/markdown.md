@@ -3,7 +3,7 @@ title: Git笔记(备忘向)
 published: 2025-10-25
 pinned: false
 description: 对常用Git语法的总结
-tags: [Markdown, Blogging]
+tags: [Git,笔记]
 category: Note
 licenseName: "Unlicensed"
 author: AdoreATRI
