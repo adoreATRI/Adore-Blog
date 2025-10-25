@@ -203,24 +203,83 @@ if (!album) {
 					if (imgSrc) {
 						// 创建全屏遮罩层
 						const overlay = document.createElement('div');
-						overlay.className = 'fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4 cursor-pointer';
+						overlay.className = 'fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4 cursor-pointer';
+						overlay.style.animation = 'fadeIn 0.2s ease-out';
 						
-						// 点击遮罩层关闭
-						overlay.onclick = () => overlay.remove();
+						// 创建关闭按钮
+						const closeBtn = document.createElement('button');
+						closeBtn.innerHTML = '✕';
+						closeBtn.className = 'fixed top-4 right-4 z-[60] w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white text-2xl rounded-full transition-all duration-200 backdrop-blur-sm';
+						closeBtn.onclick = (e) => {
+							e.stopPropagation();
+							overlay.style.animation = 'fadeOut 0.2s ease-out';
+							setTimeout(() => overlay.remove(), 200);
+						};
+						
+						// 创建加载提示
+						const loader = document.createElement('div');
+						loader.className = 'absolute text-white text-sm';
+						loader.textContent = '加载中...';
 						
 						// 创建大图
 						const largeImg = document.createElement('img');
 						largeImg.src = imgSrc;
-						largeImg.className = 'max-w-full max-h-full object-contain';
+						largeImg.className = 'max-w-full max-h-full object-contain opacity-0 transition-opacity duration-300';
 						
-						// 阻止图片点击事件冒泡（避免点击图片也关闭）
+						// 图片加载完成后显示
+						largeImg.onload = () => {
+							loader.remove();
+							largeImg.style.opacity = '1';
+						};
+						
+						// 阻止图片点击事件冒泡
 						largeImg.onclick = (e) => e.stopPropagation();
 						
+						// 点击遮罩层关闭
+						overlay.onclick = () => {
+							overlay.style.animation = 'fadeOut 0.2s ease-out';
+							setTimeout(() => overlay.remove(), 200);
+						};
+						
+						// 键盘 ESC 关闭
+						const handleKeyPress = (e) => {
+							if (e.key === 'Escape') {
+								overlay.style.animation = 'fadeOut 0.2s ease-out';
+								setTimeout(() => overlay.remove(), 200);
+								document.removeEventListener('keydown', handleKeyPress);
+							}
+						};
+						document.addEventListener('keydown', handleKeyPress);
+						
+						// 组装元素
+						overlay.appendChild(loader);
 						overlay.appendChild(largeImg);
+						overlay.appendChild(closeBtn);
 						document.body.appendChild(overlay);
+						
+						// 防止页面滚动
+						document.body.style.overflow = 'hidden';
+						
+						// 关闭时恢复滚动
+						overlay.addEventListener('remove', () => {
+							document.body.style.overflow = '';
+						});
 					}
 				});
 			});
 		});
 	</script>
+
+	<!-- 动画样式 -->
+	<style is:global>
+		@keyframes fadeIn {
+			from { opacity: 0; }
+			to { opacity: 1; }
+		}
+		
+		@keyframes fadeOut {
+			from { opacity: 1; }
+			to { opacity: 0; }
+		}
+	</style>
 </MainGridLayout>
