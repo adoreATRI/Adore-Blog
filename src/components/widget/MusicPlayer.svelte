@@ -216,7 +216,6 @@ function loadSong(song: typeof currentSong) {
 		audio.addEventListener("error", handleLoadError, { once: true });
 		audio.addEventListener("loadstart", handleLoadStart, { once: true });
 		audio.src = getAssetPath(song.url);
-		audio.playbackRate = 1.0; // 确保播放速度为正常速度
 		audio.load();
 	} else {
 		isLoading = false;
@@ -321,7 +320,6 @@ function handleAudioEvents() {
 onMount(() => {
 	audio = new Audio();
 	audio.volume = volume;
-	audio.playbackRate = 1.0; // 确保播放速度为正常速度
 	handleAudioEvents();
 	if (!musicPlayerConfig.enable) {
 		return;
