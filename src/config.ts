@@ -44,7 +44,7 @@ export const siteConfig: SiteConfig = {
 	// 顶栏标题配置
 	navbarTitle: {
 		// 顶栏标题文本
-		text: "大変に気分がいい～）",
+		text: "大変に気分がいい～",
 		// 顶栏标题图标路径，默认使用 public/assets/home/home.png
 		icon: "assets/home/露娜脸红-圆形.png",
 	},
