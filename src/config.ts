@@ -172,7 +172,7 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 			"/assets/mobile/m2-千岛茉子.webp",
 		], // 移动横幅图片
 	}, // 使用本地横幅图片
-	position: "top", // 壁纸位置，等同于 object-position
+	position: "center", // 壁纸位置，等同于 object-position
 	carousel: {
 		enable: true, // 启用轮播
 		interval: 10, // 轮播间隔时间（秒）
