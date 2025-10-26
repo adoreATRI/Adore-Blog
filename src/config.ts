@@ -163,9 +163,9 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 	enable: true, // 启用全屏壁纸功能,非Banner模式下生效
 	src: {
 		desktop: [
-			"/assets/desktop/d1-ATRI.webp",
-			"/assets/desktop/d2-ATRI.webp",
-			"/assets/desktop/d3-ATRI.webp"
+			"/assets/desktop/亚托莉-海边眺望-43比例.webp",
+			"/assets/desktop/亚托莉-水下亲吻-43比例.webp",
+			"/assets/desktop/亚托莉-月下之吻-43比例.webp"
 		], // 桌面横幅图片
 		mobile: [
 			"/assets/mobile/m1-日日姬.webp",
