@@ -165,17 +165,18 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 		desktop: [
 			"/assets/desktop/d1-ATRI.webp",
 			"/assets/desktop/d2-ATRI.webp",
-			"/assets/desktop/d3-ATRI.webp",
+			"/assets/desktop/d3-ATRI.webp"
 		], // 桌面横幅图片
 		mobile: [
 			"/assets/mobile/m1-日日姬.webp",
-			"/assets/mobile/m2-千岛茉子.webp",
+			"/assets/mobile/m2-千岛茉子.webp"
 		], // 移动横幅图片
 	}, // 使用本地横幅图片
 	position: "center", // 壁纸位置，等同于 object-position
 	carousel: {
 		enable: true, // 启用轮播
 		interval: 10, // 轮播间隔时间（秒）
+		shuffle: true, // 启用随机播放模式（类似QQ音乐随机）
 	},
 	zIndex: -1, // 层级，确保壁纸在背景层
 	opacity: 0.8, // 壁纸透明度

@@ -184,8 +184,8 @@ const positionClass = getPositionClass(position);
 </div>
 
 {isCarouselEnabled && (
-	<script define:vars={{ carouselInterval }}>
-		// 全屏壁纸轮播逻辑
+	<script define:vars={{ carouselInterval, shuffleMode: config.carousel?.shuffle || false }}>
+		// 全屏壁纸轮播逻辑（支持真正的随机播放）
 		function initFullscreenWallpaperCarousel() {
 			const wallpaperContainer = document.querySelector('[data-fullscreen-wallpaper]');
 			if (!wallpaperContainer) return;
@@ -193,26 +193,81 @@ const positionClass = getPositionClass(position);
 			const desktopItems = wallpaperContainer.querySelectorAll('.hidden.lg\\:block [data-carousel-item]');
 			const mobileItems = wallpaperContainer.querySelectorAll('.block.lg\\:hidden [data-carousel-item]');
 
+			// Fisher-Yates 洗牌算法
+			function shuffleArray(array) {
+				const shuffled = [...array];
+				for (let i = shuffled.length - 1; i > 0; i--) {
+					const j = Math.floor(Math.random() * (i + 1));
+					[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+				}
+				return shuffled;
+			}
+
 			function startCarousel(items) {
 				if (items.length <= 1) return;
 
+				let playlist = Array.from(items);
+				let shuffledPlaylist = [];
 				let currentIndex = 0;
-				
-				// 初始化：显示第一张，隐藏其他
-				items.forEach((item, index) => {
-					item.style.opacity = index === 0 ? '1' : '0';
-				});
+				let lastImageIndex = -1;
+
+				// 生成新的随机播放列表
+				function generateNewPlaylist() {
+					if (shuffleMode) {
+						// 洗牌所有图片
+						const indices = playlist.map((_, idx) => idx);
+						shuffledPlaylist = shuffleArray(indices);
+						
+						// 确保第一张图片不与上一轮的最后一张相同
+						if (lastImageIndex !== -1 && shuffledPlaylist[0] === lastImageIndex) {
+							// 如果第一张和上一张相同，与第二张交换
+							if (shuffledPlaylist.length > 1) {
+								[shuffledPlaylist[0], shuffledPlaylist[1]] = [shuffledPlaylist[1], shuffledPlaylist[0]];
+							}
+						}
+					} else {
+						// 顺序播放
+						shuffledPlaylist = playlist.map((_, idx) => idx);
+					}
+					currentIndex = 0;
+				}
+
+				// 初始化：生成播放列表
+				if (shuffleMode) {
+					// 随机模式：随机选择第一张
+					generateNewPlaylist();
+					const firstIndex = shuffledPlaylist[0];
+					items.forEach((item, index) => {
+						item.style.opacity = index === firstIndex ? '1' : '0';
+					});
+					lastImageIndex = firstIndex;
+				} else {
+					// 顺序模式：显示第一张
+					items.forEach((item, index) => {
+						item.style.opacity = index === 0 ? '1' : '0';
+					});
+					generateNewPlaylist();
+				}
 
 				// 开始轮播
 				setInterval(() => {
 					// 隐藏当前图片
-					items[currentIndex].style.opacity = '0';
+					const currentImageIndex = shuffledPlaylist[currentIndex];
+					items[currentImageIndex].style.opacity = '0';
 					
-					// 切换到下一张
-					currentIndex = (currentIndex + 1) % items.length;
+					// 移动到下一张
+					currentIndex++;
+					
+					// 如果播放列表结束，生成新的随机列表
+					if (currentIndex >= shuffledPlaylist.length) {
+						lastImageIndex = currentImageIndex; // 记录上一轮的最后一张
+						generateNewPlaylist();
+					}
 					
 					// 显示下一张图片
-					items[currentIndex].style.opacity = '1';
+					const nextImageIndex = shuffledPlaylist[currentIndex];
+					items[nextImageIndex].style.opacity = '1';
+					lastImageIndex = nextImageIndex;
 				}, carouselInterval * 1000);
 			}
 

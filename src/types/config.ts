@@ -317,6 +317,7 @@ export type FullscreenWallpaperConfig = {
 	carousel?: {
 		enable: boolean; // 是否启用轮播
 		interval: number; // 轮播间隔时间（秒）
+		shuffle?: boolean; // 是否启用随机播放模式（类似QQ音乐随机）
 	};
 	zIndex?: number; // 层级，确保壁纸在合适的层级显示
 	opacity?: number; // 壁纸透明度，0-1之间
