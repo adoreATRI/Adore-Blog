@@ -25,8 +25,8 @@ export type SiteConfig = {
 	// 特色页面开关配置
 	featurePages: {
 		anime: boolean; // 番剧页面开关
-		diary: boolean; // 日记页面开关
-		friends: boolean; // 友链页面开关
+		diary: false; // 日记页面开关
+		friends: false; // 友链页面开关
 		projects: boolean; // 项目页面开关
 		skills: boolean; // 技能页面开关
 		timeline: boolean; // 时间线页面开关

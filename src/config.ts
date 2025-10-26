@@ -167,6 +167,7 @@ export const fullscreenWallpaperConfig: FullscreenWallpaperConfig = {
 		], // 桌面横幅图片
 		mobile: [
 			"/assets/mobile/m1-日日姬.webp",
+			"/assets/mobile/m2-千岛茉子.webp"
 		], // 移动横幅图片
 	}, // 使用本地横幅图片
 	position: "top", // 壁纸位置，等同于 object-position
@@ -215,7 +216,7 @@ export const navBarConfig: NavBarConfig = {
 			icon: "material-symbols:person",
 			children: [
 				LinkPreset.Anime,
-				LinkPreset.Diary,
+				/* LinkPreset.Diary, */
 				{
 					name: "Gallery",
 					url: "/albums/",
