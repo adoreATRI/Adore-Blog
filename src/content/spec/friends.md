@@ -1,0 +1,20 @@
+---
+title: 友情链接
+description: 申请友链方式
+---
+
+欢迎交换友链喵！有兴趣请提供以下信息的说
+
+- 名称：
+- 链接：
+- 头像地址：
+- 简短描述：
+
+{
+    name: "About",
+    url: "/about/",
+    icon: "material-symbols:info",
+    children: [LinkPreset.Friends],
+}
+
+
