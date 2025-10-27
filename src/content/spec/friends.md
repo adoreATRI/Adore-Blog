@@ -1,4 +1,4 @@
----
+﻿---
 title: 友情链接
 description: 申请友链方式
 ---
@@ -9,12 +9,3 @@ description: 申请友链方式
 - 链接：
 - 头像地址：
 - 简短描述：
-
-{
-    name: "About",
-    url: "/about/",
-    icon: "material-symbols:info",
-    children: [LinkPreset.Friends],
-}
-
-
