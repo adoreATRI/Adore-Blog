@@ -26,6 +26,7 @@ function shouldShowLink(preset: LinkPreset): boolean {
 	if (preset === LinkPreset.Diary && !siteConfig.featurePages.diary) return false;
 	if (preset === LinkPreset.Friends && !siteConfig.featurePages.friends) return false;
 	if (preset === LinkPreset.Anime && !siteConfig.featurePages.anime) return false;
+	// About 页面默认始终显示
 	return true;
 }
 
@@ -39,18 +40,23 @@ let links: NavBarLink[] = navBarConfig.links.map(
 ).map((link: NavBarLink) => {
 	// 如果有子菜单，过滤子菜单项
 	if (link.children && link.children.length > 0) {
+		const filteredChildren = link.children.filter((child) => {
+			if (typeof child === "number") {
+				return shouldShowLink(child);
+			}
+			return true;
+		});
+		// 如果过滤后子菜单为空，返回 null（稍后会被过滤掉）
+		if (filteredChildren.length === 0) {
+			return null;
+		}
 		return {
 			...link,
-			children: link.children.filter((child) => {
-				if (typeof child === "number") {
-					return shouldShowLink(child);
-				}
-				return true;
-			})
+			children: filteredChildren
 		};
 	}
 	return link;
-});
+}).filter(link => link !== null); // 过滤掉子菜单为空的菜单项
 ---
 <div id="navbar" class="z-50 onload-animation" data-transparent-mode={navbarTransparentMode} data-is-home={isHomePage}>
     <div class="absolute h-8 left-0 right-0 -top-8 bg-[var(--card-bg)] transition"></div> <!-- used for onload animation -->
