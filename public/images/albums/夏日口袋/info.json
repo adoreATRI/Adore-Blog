@@ -8,6 +8,6 @@
 		"画廊",
 		"夏日口袋"
 	],
-	"layout": "masonry",
+	"layout": "grid",
 	"columns": 3
 }
