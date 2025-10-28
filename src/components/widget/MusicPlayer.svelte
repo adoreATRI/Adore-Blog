@@ -74,6 +74,14 @@ const localPlaylist = [
 		url: "assets/music/url/茶太 - Candy a Mine.mp3",
 		duration: 0,
 	},
+    {
+		id: 2,
+		title: "DESIRE",
+		artist: "美郷あき",
+		cover: "assets/music/cover/DESIRE.webp",
+		url: "assets/music/url/美郷あき - DESIRE_L.mp3",
+		duration: 0,
+	},
 ];
 
 async function fetchMetingPlaylist() {
