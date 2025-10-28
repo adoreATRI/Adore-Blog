@@ -23,9 +23,10 @@ draft: false
 2. 在vscode中安装 `clang-format` 扩展
 
 3. 将下面配置保存在 `.clang-format` 文件中，放置在项目的根目录下
+
 ![0926c7a0d0dd550b1e580432a4990b01.png](https://i.mji.rip/2025/10/28/0926c7a0d0dd550b1e580432a4990b01.png)
 
-1. 在vscode设置中，找到`clang-format`扩展设置，设置好刚刚写的文件路径，同时建议打开`Format On Save`选项
+4. 在vscode设置中，找到`clang-format`扩展设置，设置好刚刚写的文件路径，同时建议打开`Format On Save`选项
 ![7fc916230e19ffe56ed3e88e22179d10.png](https://i.mji.rip/2025/10/28/7fc916230e19ffe56ed3e88e22179d10.png)
 ![ad34e72439e86d42952557a54d62ed93.png](https://i.mji.rip/2025/10/28/ad34e72439e86d42952557a54d62ed93.png)
 ![f7a5b81ef96bb43b7dafccbff1dd649b.png](https://i.mji.rip/2025/10/28/f7a5b81ef96bb43b7dafccbff1dd649b.png)
