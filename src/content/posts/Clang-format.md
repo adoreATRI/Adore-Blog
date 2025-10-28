@@ -1,6 +1,6 @@
 ---
 title: 快速上手clang-format规范代码
-published: 2025-10-28
+published: 2025-01-28
 pinned: false
 description: clang-format的简单使用
 tags: [Clang-format,教程]
@@ -44,11 +44,16 @@ BraceWrapping:
 ----
 
 ## 食用方法
-1.下载安装 `clang-format` 工具，记住路径
-2.在vscode中安装 `clang-format` 扩展
-3.将上述配置保存在 `.clang-format` 文件中，放置在项目的根目录下
-4.在vscode设置中，找到`clang-format`扩展设置，Executable Path中填写`clang-format`路径,同时建议打开`Format On Save`选项
-5.Ctrl+Shift+P，输入`Format Document`，选择`Clang-Format`即可格式化当前文件
+
+1. 下载安装 `clang-format` 工具，记住路径
+
+2. 在vscode中安装 `clang-format` 扩展
+
+3. 将上述配置保存在 `.clang-format` 文件中，放置在项目的根目录下
+
+4. 在vscode设置中，找到`clang-format`扩展设置，Executable Path中填写`clang-format`路径,同时建议打开`Format On Save`选项
+
+5. Ctrl+Shift+P，输入`Format Document`，选择`Clang-Format`即可格式化当前文件
 
 ----
 
