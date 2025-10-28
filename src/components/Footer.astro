@@ -8,6 +8,9 @@ import { url } from "../utils/url-utils";
 
 const currentYear = new Date().getFullYear();
 
+// 博客启动日期（请根据实际情况修改）
+const blogStartDate = new Date('2025-10-25'); // 修改为您的博客启动日期
+
 // 读取FooterConfig.html文件内容
 let customFooterHtml = "";
 if (footerConfig.enable) {
@@ -41,7 +44,32 @@ if (footerConfig.enable) {
         Powered by
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://astro.build">Astro</a> &
         <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/matsuzaka-yuki/mizuki">Mizuki</a>&nbsp; Version <a class="transition link text-[var(--primary)] font-medium" target="_blank" href="https://github.com/matsuzaka-yuki/mizuki">6.0</a><br>
+        <span id="blog-running-time">博客已运行 <span id="running-days">0</span> 天</span>
         
 
     </div>
 </div>
+
+<script is:inline define:vars={{ blogStartDate: blogStartDate.toISOString() }}>
+    // 计算博客运行天数
+    function updateRunningDays() {
+        const startDate = new Date(blogStartDate);
+        const currentDate = new Date();
+        const timeDiff = currentDate - startDate;
+        const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+        
+        const runningDaysElement = document.getElementById('running-days');
+        if (runningDaysElement) {
+            runningDaysElement.textContent = daysDiff;
+        }
+    }
+    
+    // 页面加载时更新
+    updateRunningDays();
+    
+    // 如果使用了 Swup，在页面切换后也要更新
+    if (typeof window !== 'undefined') {
+        document.addEventListener('DOMContentLoaded', updateRunningDays);
+        document.addEventListener('swup:page:view', updateRunningDays);
+    }
+</script>
