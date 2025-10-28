@@ -2,57 +2,43 @@
 import {Icon} from "astro-icon/components";
 ---
 
-<!-- There can't be a filter on parent element, or it will break `fixed` -->
-<div class="back-to-top-wrapper">
-    <!-- 圆形返回顶部按钮，带进度条和百分比 -->
-    <div id="back-to-top-btn" class="back-to-top-btn hide"
-         onclick="window.backToTop()">
-        <svg class="progress-ring" width="50" height="50">
-            <circle class="progress-ring-bg" cx="25" cy="25" r="22" />
-            <circle class="progress-ring-progress" cx="25" cy="25" r="22" id="progress-circle" />
-        </svg>
-        <button aria-label="Back to Top" class="btn-circle">
-            <Icon name="material-symbols:keyboard-arrow-up-rounded" class="icon-arrow"></Icon>
-            <span id="progress-text" class="progress-text">0%</span>
-        </button>
-    </div>
-    
-    <!-- 文章滚动条 - 紧贴右边缘 -->
-    <div id="article-scrollbar" class="article-scrollbar hide">
-        <div class="scrollbar-track">
-            <div id="scrollbar-thumb" class="scrollbar-thumb"></div>
-        </div>
+<!-- 圆形返回顶部按钮，带进度条和百分比 -->
+<div id="back-to-top-btn" class="back-to-top-btn" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <svg class="progress-ring" width="58" height="58" viewBox="0 0 58 58">
+        <circle class="progress-ring-bg" cx="29" cy="29" r="26" />
+        <circle class="progress-ring-progress" cx="29" cy="29" r="26" id="progress-circle" />
+    </svg>
+    <div class="btn-circle">
+        <Icon name="material-symbols:keyboard-arrow-up-rounded" class="icon-arrow"></Icon>
+        <span id="progress-text" class="progress-text">0%</span>
     </div>
 </div>
 
 <style lang="stylus">
-  .back-to-top-wrapper
-    position: fixed
-    right: 0
-    top: 0
-    pointer-events: none
-    z-index: 100
-
-  /* 圆形返回顶部按钮 */
+  /* 返回顶部按钮 */
   .back-to-top-btn
     position: fixed
-    bottom: 2rem
+    bottom: 9.5rem
     right: 2rem
-    width: 50px
-    height: 50px
+    width: 58px
+    height: 58px
     cursor: pointer
-    pointer-events: auto
     opacity: 0
-    transform: scale(0.8)
-    transition: all 0.3s ease
-    z-index: 101
+    transform: scale(0.8) translateY(20px)
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)
+    z-index: 9999
+    pointer-events: none
+    will-change: opacity, transform
 
-    &:not(.hide)
+    &.show
       opacity: 1
-      transform: scale(1)
-
-    &:active
-      transform: scale(0.9)
+      transform: scale(1) translateY(0)
+      pointer-events: auto
+    
+    // 手机端调整位置
+    @media (max-width: 768px)
+      bottom: 9rem
+      right: 1rem
 
   /* SVG 进度环 */
   .progress-ring
@@ -60,27 +46,26 @@ import {Icon} from "astro-icon/components";
     top: 0
     left: 0
     transform: rotate(-90deg)
-    width: 50px
-    height: 50px
+    width: 58px
+    height: 58px
     pointer-events: none
     
   .progress-ring-bg
     fill: none
-    stroke: rgba(128, 128, 128, 0.2)
-    stroke-width: 2
+    stroke: rgba(128, 128, 128, 0.15)
+    stroke-width: 3
     
   .progress-ring-progress
     fill: none
-    stroke: var(--primary)
-    stroke-width: 2
-    stroke-dasharray: 138.23
-    stroke-dashoffset: 138.23
-    transition: stroke-dashoffset 0.3s ease
+    stroke: #3b82f6
+    stroke-width: 3
     stroke-linecap: round
 
   /* 圆形按钮 */
   .btn-circle
-    position: relative
+    position: absolute
+    top: 4px
+    left: 4px
     width: 50px
     height: 50px
     border-radius: 50%
@@ -90,9 +75,10 @@ import {Icon} from "astro-icon/components";
     align-items: center
     justify-content: center
     cursor: pointer
-    transition: all 0.2s ease
+    transition: background 0.2s ease, box-shadow 0.2s ease
     color: var(--primary)
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15)
+    pointer-events: none
     
     &:hover
       background: var(--btn-card-bg-hover)
@@ -110,8 +96,9 @@ import {Icon} from "astro-icon/components";
   .icon-arrow
     position: absolute
     font-size: 1.5rem
-    opacity: 0
-    transition: opacity 0.2s ease
+    opacity: 1
+    transition: opacity 0.3s ease
+    pointer-events: none
 
   /* 百分比文字 */
   .progress-text
@@ -119,221 +106,110 @@ import {Icon} from "astro-icon/components";
     font-size: 11px
     font-weight: 600
     color: var(--primary)
-    opacity: 1
-    transition: opacity 0.2s ease
-    user-select: none
-
-  /* 文章滚动条 - 紧贴浏览器右边缘 */
-  .article-scrollbar
-    position: fixed
-    right: 0
-    top: 50%
-    transform: translateY(-50%)
-    width: 12px
-    height: 40vh
-    min-height: 200px
-    max-height: 400px
-    pointer-events: auto
     opacity: 0
-    transition: all 0.3s ease
-    padding: 4px
-    z-index: 99
-    
-    &:not(.hide)
-      opacity: 1
+    transition: opacity 0.3s ease
+    user-select: none
+    pointer-events: none
   
-  .scrollbar-track
-    width: 4px
-    height: 100%
-    background: rgba(128, 128, 128, 0.2)
-    border-radius: 2px
-    position: relative
-    cursor: pointer
+  /* 滑动时显示百分比,隐藏箭头 */
+  .back-to-top-btn.scrolling
+    .icon-arrow
+      opacity: 0
     
-  .scrollbar-thumb
-    width: 4px
-    background: var(--primary)
-    border-radius: 2px
-    position: absolute
-    top: 0
-    left: 0
-    min-height: 30px
-    cursor: grab
-    transition: all 0.2s ease
-    
-    &:hover
-      width: 6px
-      background: var(--primary)
-      opacity: 0.9
-      margin-left: -1px
-      
-    &:active
-      cursor: grabbing
-      width: 6px
-      margin-left: -1px
+    .progress-text
+      opacity: 1
 
   // 手机端隐藏
   @media (max-width: 768px)
-    .back-to-top-wrapper
+    .back-to-top-btn
       display: none
 
 </style>
 
 <script is:inline>
-    // 全局函数，供 onclick 使用
-    window.backToTop = function() {
-        window.scroll({top: 0, behavior: 'smooth'});
+// 简单可靠的返回顶部按钮实现
+function initBackToTop() {
+    const btn = document.getElementById('back-to-top-btn');
+    const progressCircle = document.getElementById('progress-circle');
+    const progressText = document.getElementById('progress-text');
+
+    if (!btn || !progressCircle || !progressText) {
+        return;
+    }
+
+    const radius = 26;
+    const circumference = 2 * Math.PI * radius;
+    let scrollTimeout = null;
+    let rafId = null;
+    
+    // 初始化进度圈
+    progressCircle.style.strokeDasharray = `${circumference}`;
+    progressCircle.style.strokeDashoffset = `${circumference}`;
+    progressCircle.style.transition = 'stroke-dashoffset 0.15s linear';
+    
+    // 检查是否在文章页面
+    function isArticlePage() {
+        return window.location.pathname.includes('/posts/');
     }
     
-    // 初始化进度条和滚动条
-    function initScrollFeatures() {
-        console.log('BackToTop: Starting initialization...');
-        
-        const backToTopBtn = document.getElementById('back-to-top-btn');
-        const progressCircle = document.getElementById('progress-circle');
-        const progressText = document.getElementById('progress-text');
-        const articleScrollbar = document.getElementById('article-scrollbar');
-        const scrollbarThumb = document.getElementById('scrollbar-thumb');
-        const scrollbarTrack = articleScrollbar?.querySelector('.scrollbar-track');
-        
-        console.log('BackToTop elements:', {
-            backToTopBtn: !!backToTopBtn,
-            progressCircle: !!progressCircle,
-            progressText: !!progressText,
-            articleScrollbar: !!articleScrollbar,
-            scrollbarThumb: !!scrollbarThumb,
-            scrollbarTrack: !!scrollbarTrack
-        });
-        
-        if (!backToTopBtn || !progressCircle || !progressText || !articleScrollbar || !scrollbarThumb || !scrollbarTrack) {
-            console.error('BackToTop: Missing elements, retrying in 500ms...');
-            setTimeout(initScrollFeatures, 500);
-            return;
-        }
-        
-        const radius = 22;
-        const circumference = 2 * Math.PI * radius;
-        progressCircle.style.strokeDasharray = circumference + '';
-        progressCircle.style.strokeDashoffset = circumference + '';
-        
-        let isDragging = false;
-        let animationFrameId = null;
-        
-        function updateScrollIndicators() {
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            
-            if (docHeight <= 0) {
-                backToTopBtn.classList.add('hide');
-                articleScrollbar.classList.add('hide');
-                return;
-            }
-            
-            const scrollPercentage = Math.round((scrollTop / docHeight) * 100);
-            
-            // 更新环形进度条
-            const offset = circumference - (scrollPercentage / 100) * circumference;
-            progressCircle.style.strokeDashoffset = offset + '';
-            
-            // 更新百分比文字
-            progressText.textContent = scrollPercentage + '%';
-            
-            // 获取滚动条实际高度
-            const scrollbarHeight = scrollbarTrack.clientHeight;
-            
-            // 更新滚动条滑块位置和高度
-            const viewportHeight = document.documentElement.clientHeight;
-            const totalHeight = document.documentElement.scrollHeight;
-            const thumbHeightRatio = viewportHeight / totalHeight;
-            const thumbHeight = Math.max(30, scrollbarHeight * thumbHeightRatio);
-            scrollbarThumb.style.height = thumbHeight + 'px';
-            
-            const maxThumbTop = scrollbarHeight - thumbHeight;
-            const thumbTop = (scrollPercentage / 100) * maxThumbTop;
-            scrollbarThumb.style.top = thumbTop + 'px';
-            
-            // 显示/隐藏按钮和滚动条
-            if (scrollTop > 100) {
-                backToTopBtn.classList.remove('hide');
-                articleScrollbar.classList.remove('hide');
-            } else {
-                backToTopBtn.classList.add('hide');
-                articleScrollbar.classList.add('hide');
-            }
-        }
-        
-        function onScroll() {
-            if (animationFrameId) {
-                cancelAnimationFrame(animationFrameId);
-            }
-            animationFrameId = requestAnimationFrame(updateScrollIndicators);
-        }
-        
-        // 滚动条拖拽功能
-        scrollbarThumb.addEventListener('mousedown', function(e) {
-            isDragging = true;
-            e.preventDefault();
-        });
-        
-        // 点击轨道跳转
-        scrollbarTrack.addEventListener('click', function(e) {
-            if (e.target === scrollbarThumb) return;
-            
-            const rect = scrollbarTrack.getBoundingClientRect();
-            const clickY = e.clientY - rect.top;
-            const scrollbarHeight = scrollbarTrack.clientHeight;
-            const percentage = clickY / scrollbarHeight;
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const targetScroll = percentage * docHeight;
-            
-            window.scroll({top: targetScroll, behavior: 'smooth'});
-        });
-        
-        document.addEventListener('mousemove', function(e) {
-            if (!isDragging) return;
-            
-            const rect = scrollbarTrack.getBoundingClientRect();
-            const scrollbarHeight = scrollbarTrack.clientHeight;
-            const mouseY = e.clientY - rect.top;
-            const percentage = Math.max(0, Math.min(1, mouseY / scrollbarHeight));
-            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const targetScroll = percentage * docHeight;
-            
-            window.scroll({top: targetScroll, behavior: 'auto'});
-        });
-        
-        document.addEventListener('mouseup', function() {
-            if (isDragging) {
-                isDragging = false;
-            }
-        });
-        
-        // 监听滚动事件
-        window.addEventListener('scroll', onScroll, { passive: true });
-        
-        // 监听窗口大小变化
-        window.addEventListener('resize', updateScrollIndicators, { passive: true });
-        
-        // 初始化
-        updateScrollIndicators();
-        
-        console.log('BackToTop: Initialized successfully!');
-    }
-    
-    // 页面加载时初始化
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initScrollFeatures);
+    // 如果不在文章页面,隐藏按钮并移除事件监听
+    if (!isArticlePage()) {
+        btn.style.display = 'none';
+        return;
     } else {
-        setTimeout(initScrollFeatures, 100);
+        btn.style.display = 'block';
     }
     
-    // Swup 页面切换时重新初始化
-    document.addEventListener('swup:page:view', function() {
-        setTimeout(initScrollFeatures, 200);
-    });
+    function updateProgress() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        
+        if (docHeight > 0) {
+            const scrollPercent = Math.round((scrollTop / docHeight) * 100);
+            const offset = circumference - (scrollPercent / 100) * circumference;
+            
+            progressCircle.style.strokeDashoffset = `${offset}`;
+            progressText.textContent = scrollPercent + '%';
+            
+            // 显示/隐藏按钮
+            if (scrollTop > 100) {
+                btn.classList.add('show');
+            } else {
+                btn.classList.remove('show');
+            }
+            
+            // 滑动时显示百分比
+            btn.classList.add('scrolling');
+            
+            // 停止滑动 1 秒后显示箭头
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                btn.classList.remove('scrolling');
+            }, 1000);
+        }
+    }
     
-    // Astro 页面加载完成后初始化
-    document.addEventListener('astro:page-load', function() {
-        setTimeout(initScrollFeatures, 200);
-    });
+    function onScroll() {
+        if (rafId) {
+            cancelAnimationFrame(rafId);
+        }
+        rafId = requestAnimationFrame(updateProgress);
+    }
+    
+    window.addEventListener('scroll', onScroll, { passive: true });
+    updateProgress();
+}
+
+// 页面加载时初始化
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBackToTop);
+} else {
+    initBackToTop();
+}
+
+// Swup 页面切换时重新初始化
+document.addEventListener('swup:page:view', initBackToTop);
+
+// Astro 页面加载完成后初始化
+document.addEventListener('astro:page-load', initBackToTop);
 </script>

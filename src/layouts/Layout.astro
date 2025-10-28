@@ -132,7 +132,6 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 
 <!DOCTYPE html>
 <html lang={siteLang} class="bg-[var(--page-bg)] text-[14px] md:text-[16px]"
-	  data-overlayscrollbars-initialize
 >
 	<head>
 		<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-KRX3XGVH');</script>
@@ -235,7 +234,6 @@ const umamiScripts = umamiConfig.scripts || ""; // 获取Umami scripts配置
 		<script src="/js/skills-progress-handler.js" defer></script>
 </head>
 	<body class=" min-h-screen " class:list={[{"lg:is-home": isHomePage, "enable-banner": enableBanner, "zen-maru-gothic-enabled": siteConfig.font.zenMaruGothic.enable, "hanalei-enabled": siteConfig.font.hanalei.enable}]}
-		  data-overlayscrollbars-initialize
 	>
 		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KRX3XGVH" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		
@@ -1469,3 +1467,55 @@ if (window.swup) {
 }
 </script>
 
+<!-- DEBUG: 临时调试脚本（排查滚动/返回顶部问题），调试完成后请移除 -->
+<script is:inline>
+(function () {
+  console.log('[DEBUG] force-enable-scroll loaded');
+
+  // 尝试关闭已知的全局滚动保护对象
+  try {
+    if (window.__scrollProtection) { window.__scrollProtection.enabled = false; console.log('[DEBUG] __scrollProtection disabled'); }
+    if (window.scrollProtection) { window.scrollProtection.enabled = false; console.log('[DEBUG] scrollProtection disabled'); }
+    if (window._scrollProtection) { window._scrollProtection.enabled = false; console.log('[DEBUG] _scrollProtection disabled'); }
+  } catch (e) {
+    console.warn('[DEBUG] disabling known protection objects failed', e);
+  }
+
+  // 强制显示返回顶部按钮 / 文章滚动条
+  const showIfHidden = (sel) => {
+    const el = document.querySelector(sel);
+    if (el) {
+      el.classList.remove('hide');
+      el.style.opacity = '1';
+      el.style.pointerEvents = 'auto';
+      console.log('[DEBUG] showed', sel, el);
+    } else {
+      console.log('[DEBUG] not found', sel);
+    }
+  };
+
+  // 页面加载后尝试显示
+  function tryShow() {
+    showIfHidden('.back-to-top-btn');
+    showIfHidden('#back-to-top-btn');
+    showIfHidden('#article-scrollbar');
+    showIfHidden('.article-scrollbar');
+  }
+
+  // 立即执行
+  tryShow();
+  
+  // DOMContentLoaded 再次尝试
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', tryShow);
+  }
+
+  // 监听 wheel 事件
+  const wheelHandler = function (e) {
+    console.log('[DEBUG] wheel deltaY:', e.deltaY, 'target:', e.target.tagName);
+  };
+  window.addEventListener('wheel', wheelHandler, { passive: true });
+
+  console.log('[DEBUG] force-enable-scroll executed — check console & scroll the page');
+})();
+</script>
