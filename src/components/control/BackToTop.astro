@@ -4,39 +4,45 @@ import {Icon} from "astro-icon/components";
 
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
 <div class="back-to-top-wrapper block">
-    <div id="back-to-top-btn" class="back-to-top-btn hide flex items-center rounded-2xl overflow-hidden transition"
+    <!-- 圆形返回顶部按钮，带进度条 -->
+    <div id="back-to-top-btn" class="back-to-top-btn hide transition"
          onclick="backToTop()">
-        <button aria-label="Back to Top" class="btn-card h-[3.75rem] w-[3.75rem]">
-            <Icon name="material-symbols:keyboard-arrow-up-rounded" class="mx-auto"></Icon>
+        <svg class="progress-ring" width="60" height="60">
+            <circle class="progress-ring-bg" cx="30" cy="30" r="26" />
+            <circle class="progress-ring-progress" cx="30" cy="30" r="26" id="progress-circle" />
+        </svg>
+        <button aria-label="Back to Top" class="btn-circle">
+            <Icon name="material-symbols:keyboard-arrow-up-rounded" class="icon-arrow"></Icon>
         </button>
+    </div>
+    
+    <!-- 文章滚动条 -->
+    <div id="article-scrollbar" class="article-scrollbar hide">
+        <div class="scrollbar-track">
+            <div id="scrollbar-thumb" class="scrollbar-thumb"></div>
+        </div>
     </div>
 </div>
 
 <style lang="stylus">
   .back-to-top-wrapper
-    width: 3.75rem
-    height: 3.75rem
     position: absolute
     right: 0
     top: 0
     pointer-events: none
 
+  /* 圆形返回顶部按钮 */
   .back-to-top-btn
-    color: var(--primary)
-    font-size: 2.25rem
-    font-weight: bold
-    border: none
     position: fixed
     bottom: 10rem
-    opacity: 1
     right: 6rem
+    width: 60px
+    height: 60px
     cursor: pointer
-    transform: translateX(5rem)
     pointer-events: auto
-    transition: box-shadow 1s ease-in-out
-
-    i
-      font-size: 1.75rem
+    transform: translateX(5rem)
+    opacity: 1
+    transition: all 0.3s ease
 
     &.hide
       transform: translateX(5rem) scale(0.9)
@@ -46,13 +52,102 @@ import {Icon} from "astro-icon/components";
     &:active
       transform: translateX(5rem) scale(0.9)
 
-  @media (max-width: 1560px)
-    .back-to-top-btn
-      box-shadow:
-              0 0 0 1px var(--btn-regular-bg) ,
-              0 0 1em var(--btn-regular-bg) ;
+  /* SVG 进度环 */
+  .progress-ring
+    position: absolute
+    top: 0
+    left: 0
+    transform: rotate(-90deg)
+    
+  .progress-ring-bg
+    fill: none
+    stroke: var(--btn-regular-bg)
+    stroke-width: 3
+    
+  .progress-ring-progress
+    fill: none
+    stroke: var(--primary)
+    stroke-width: 3
+    stroke-dasharray: 163.36
+    stroke-dashoffset: 163.36
+    transition: stroke-dashoffset 0.3s ease
+    stroke-linecap: round
 
-  // 手机端隐藏返回顶部按钮
+  /* 圆形按钮 */
+  .btn-circle
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
+    width: 48px
+    height: 48px
+    border-radius: 50%
+    background: var(--btn-card-bg)
+    border: none
+    display: flex
+    align-items: center
+    justify-content: center
+    cursor: pointer
+    transition: all 0.3s ease
+    color: var(--primary)
+    font-size: 2rem
+    
+    &:hover
+      background: var(--btn-card-bg-hover)
+      
+    &:active
+      transform: translate(-50%, -50%) scale(0.95)
+
+  .icon-arrow
+    font-size: 1.5rem
+
+  /* 文章滚动条 */
+  .article-scrollbar
+    position: fixed
+    right: 6rem
+    bottom: 16rem
+    width: 60px
+    height: 300px
+    pointer-events: auto
+    opacity: 1
+    transition: all 0.3s ease
+    
+    &.hide
+      opacity: 0
+      pointer-events: none
+      transform: translateX(5rem)
+  
+  .scrollbar-track
+    width: 8px
+    height: 100%
+    background: var(--btn-regular-bg)
+    border-radius: 4px
+    position: relative
+    margin: 0 auto
+    cursor: pointer
+    
+  .scrollbar-thumb
+    width: 8px
+    background: var(--primary)
+    border-radius: 4px
+    position: absolute
+    top: 0
+    left: 0
+    cursor: grab
+    transition: background 0.2s ease
+    
+    &:hover
+      background: var(--primary)
+      opacity: 0.8
+      
+    &:active
+      cursor: grabbing
+
+  @media (max-width: 1560px)
+    .back-to-top-btn, .article-scrollbar
+      box-shadow: 0 0 0 1px var(--btn-regular-bg), 0 0 1em var(--btn-regular-bg)
+
+  // 手机端隐藏
   @media (max-width: 768px)
     .back-to-top-wrapper
       display: none
@@ -61,7 +156,105 @@ import {Icon} from "astro-icon/components";
 
 <script is:raw is:inline>
     function backToTop() {
-        // 直接使用原生滚动，避免OverlayScrollbars冲突
         window.scroll({top: 0, behavior: 'smooth'});
     }
+    
+    // 初始化进度条和滚动条
+    function initScrollFeatures() {
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+        const progressCircle = document.getElementById('progress-circle');
+        const articleScrollbar = document.getElementById('article-scrollbar');
+        const scrollbarThumb = document.getElementById('scrollbar-thumb');
+        const scrollbarTrack = articleScrollbar?.querySelector('.scrollbar-track');
+        
+        if (!backToTopBtn || !progressCircle || !articleScrollbar || !scrollbarThumb || !scrollbarTrack) {
+            return;
+        }
+        
+        const radius = 26;
+        const circumference = 2 * Math.PI * radius;
+        
+        let isDragging = false;
+        
+        function updateScrollIndicators() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercentage = (scrollTop / docHeight) * 100;
+            
+            // 更新环形进度条
+            const offset = circumference - (scrollPercentage / 100) * circumference;
+            progressCircle.style.strokeDashoffset = offset;
+            
+            // 更新滚动条滑块位置和高度
+            const thumbHeight = Math.max(30, (document.documentElement.clientHeight / document.documentElement.scrollHeight) * 300);
+            scrollbarThumb.style.height = thumbHeight + 'px';
+            const maxThumbTop = 300 - thumbHeight;
+            const thumbTop = (scrollPercentage / 100) * maxThumbTop;
+            scrollbarThumb.style.top = thumbTop + 'px';
+            
+            // 显示/隐藏按钮和滚动条
+            if (scrollTop > 100) {
+                backToTopBtn.classList.remove('hide');
+                articleScrollbar.classList.remove('hide');
+            } else {
+                backToTopBtn.classList.add('hide');
+                articleScrollbar.classList.add('hide');
+            }
+        }
+        
+        // 滚动条拖拽功能
+        scrollbarThumb.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            scrollbarThumb.style.cursor = 'grabbing';
+            e.preventDefault();
+        });
+        
+        // 点击轨道跳转
+        scrollbarTrack.addEventListener('click', (e) => {
+            if (e.target === scrollbarThumb) return;
+            
+            const rect = scrollbarTrack.getBoundingClientRect();
+            const clickY = e.clientY - rect.top;
+            const percentage = clickY / 300;
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const targetScroll = percentage * docHeight;
+            
+            window.scroll({top: targetScroll, behavior: 'smooth'});
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            
+            const rect = scrollbarTrack.getBoundingClientRect();
+            const mouseY = e.clientY - rect.top;
+            const percentage = Math.max(0, Math.min(1, mouseY / 300));
+            const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const targetScroll = percentage * docHeight;
+            
+            window.scroll({top: targetScroll, behavior: 'auto'});
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                scrollbarThumb.style.cursor = 'grab';
+            }
+        });
+        
+        // 监听滚动事件
+        window.addEventListener('scroll', updateScrollIndicators, { passive: true });
+        
+        // 初始化
+        updateScrollIndicators();
+    }
+    
+    // 页面加载时初始化
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initScrollFeatures);
+    } else {
+        initScrollFeatures();
+    }
+    
+    // Swup 页面切换时重新初始化
+    document.addEventListener('swup:page:view', initScrollFeatures);
 </script>
