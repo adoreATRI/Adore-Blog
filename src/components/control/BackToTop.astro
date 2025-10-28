@@ -60,6 +60,8 @@ import {Icon} from "astro-icon/components";
     stroke: #3b82f6
     stroke-width: 3
     stroke-linecap: round
+    transition: none
+    will-change: stroke-dashoffset
 
   /* 圆形按钮 */
   .btn-circle
@@ -140,12 +142,12 @@ function initBackToTop() {
     const radius = 26;
     const circumference = 2 * Math.PI * radius;
     let scrollTimeout = null;
-    let rafId = null;
+    let ticking = false;
+    let lastPercent = -1;
     
     // 初始化进度圈
     progressCircle.style.strokeDasharray = `${circumference}`;
     progressCircle.style.strokeDashoffset = `${circumference}`;
-    progressCircle.style.transition = 'stroke-dashoffset 0.15s linear';
     
     // 检查是否在文章页面
     function isArticlePage() {
@@ -166,20 +168,32 @@ function initBackToTop() {
         
         if (docHeight > 0) {
             const scrollPercent = Math.round((scrollTop / docHeight) * 100);
-            const offset = circumference - (scrollPercent / 100) * circumference;
             
+            // 始终更新进度条位置以保持流畅
+            const offset = circumference - (scrollPercent / 100) * circumference;
             progressCircle.style.strokeDashoffset = `${offset}`;
-            progressText.textContent = scrollPercent + '%';
+            
+            // 只在百分比变化时更新文字
+            if (scrollPercent !== lastPercent) {
+                lastPercent = scrollPercent;
+                progressText.textContent = scrollPercent + '%';
+            }
             
             // 显示/隐藏按钮
             if (scrollTop > 100) {
-                btn.classList.add('show');
+                if (!btn.classList.contains('show')) {
+                    btn.classList.add('show');
+                }
             } else {
-                btn.classList.remove('show');
+                if (btn.classList.contains('show')) {
+                    btn.classList.remove('show');
+                }
             }
             
             // 滑动时显示百分比
-            btn.classList.add('scrolling');
+            if (!btn.classList.contains('scrolling')) {
+                btn.classList.add('scrolling');
+            }
             
             // 停止滑动 1 秒后显示箭头
             clearTimeout(scrollTimeout);
@@ -187,13 +201,15 @@ function initBackToTop() {
                 btn.classList.remove('scrolling');
             }, 1000);
         }
+        
+        ticking = false;
     }
     
     function onScroll() {
-        if (rafId) {
-            cancelAnimationFrame(rafId);
+        if (!ticking) {
+            window.requestAnimationFrame(updateProgress);
+            ticking = true;
         }
-        rafId = requestAnimationFrame(updateProgress);
     }
     
     window.addEventListener('scroll', onScroll, { passive: true });
