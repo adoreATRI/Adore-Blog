@@ -6,7 +6,7 @@ import {Icon} from "astro-icon/components";
 <div class="back-to-top-wrapper">
     <!-- 圆形返回顶部按钮，带进度条和百分比 -->
     <div id="back-to-top-btn" class="back-to-top-btn hide"
-         onclick="backToTop()">
+         onclick="window.backToTop()">
         <svg class="progress-ring" width="50" height="50">
             <circle class="progress-ring-bg" cx="25" cy="25" r="22" />
             <circle class="progress-ring-progress" cx="25" cy="25" r="22" id="progress-circle" />
@@ -180,12 +180,15 @@ import {Icon} from "astro-icon/components";
 </style>
 
 <script is:inline>
-    function backToTop() {
+    // 全局函数，供 onclick 使用
+    window.backToTop = function() {
         window.scroll({top: 0, behavior: 'smooth'});
     }
     
     // 初始化进度条和滚动条
     function initScrollFeatures() {
+        console.log('BackToTop: Starting initialization...');
+        
         const backToTopBtn = document.getElementById('back-to-top-btn');
         const progressCircle = document.getElementById('progress-circle');
         const progressText = document.getElementById('progress-text');
@@ -193,23 +196,34 @@ import {Icon} from "astro-icon/components";
         const scrollbarThumb = document.getElementById('scrollbar-thumb');
         const scrollbarTrack = articleScrollbar?.querySelector('.scrollbar-track');
         
+        console.log('BackToTop elements:', {
+            backToTopBtn: !!backToTopBtn,
+            progressCircle: !!progressCircle,
+            progressText: !!progressText,
+            articleScrollbar: !!articleScrollbar,
+            scrollbarThumb: !!scrollbarThumb,
+            scrollbarTrack: !!scrollbarTrack
+        });
+        
         if (!backToTopBtn || !progressCircle || !progressText || !articleScrollbar || !scrollbarThumb || !scrollbarTrack) {
-            console.log('BackToTop: Missing elements');
+            console.error('BackToTop: Missing elements, retrying in 500ms...');
+            setTimeout(initScrollFeatures, 500);
             return;
         }
         
         const radius = 22;
         const circumference = 2 * Math.PI * radius;
-        progressCircle.style.strokeDasharray = circumference;
+        progressCircle.style.strokeDasharray = circumference + '';
+        progressCircle.style.strokeDashoffset = circumference + '';
         
         let isDragging = false;
+        let animationFrameId = null;
         
         function updateScrollIndicators() {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             
             if (docHeight <= 0) {
-                // 页面太短，隐藏所有控件
                 backToTopBtn.classList.add('hide');
                 articleScrollbar.classList.add('hide');
                 return;
@@ -219,7 +233,7 @@ import {Icon} from "astro-icon/components";
             
             // 更新环形进度条
             const offset = circumference - (scrollPercentage / 100) * circumference;
-            progressCircle.style.strokeDashoffset = offset;
+            progressCircle.style.strokeDashoffset = offset + '';
             
             // 更新百分比文字
             progressText.textContent = scrollPercentage + '%';
@@ -248,14 +262,21 @@ import {Icon} from "astro-icon/components";
             }
         }
         
+        function onScroll() {
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            animationFrameId = requestAnimationFrame(updateScrollIndicators);
+        }
+        
         // 滚动条拖拽功能
-        scrollbarThumb.addEventListener('mousedown', (e) => {
+        scrollbarThumb.addEventListener('mousedown', function(e) {
             isDragging = true;
             e.preventDefault();
         });
         
         // 点击轨道跳转
-        scrollbarTrack.addEventListener('click', (e) => {
+        scrollbarTrack.addEventListener('click', function(e) {
             if (e.target === scrollbarThumb) return;
             
             const rect = scrollbarTrack.getBoundingClientRect();
@@ -268,7 +289,7 @@ import {Icon} from "astro-icon/components";
             window.scroll({top: targetScroll, behavior: 'smooth'});
         });
         
-        document.addEventListener('mousemove', (e) => {
+        document.addEventListener('mousemove', function(e) {
             if (!isDragging) return;
             
             const rect = scrollbarTrack.getBoundingClientRect();
@@ -281,14 +302,14 @@ import {Icon} from "astro-icon/components";
             window.scroll({top: targetScroll, behavior: 'auto'});
         });
         
-        document.addEventListener('mouseup', () => {
+        document.addEventListener('mouseup', function() {
             if (isDragging) {
                 isDragging = false;
             }
         });
         
         // 监听滚动事件
-        window.addEventListener('scroll', updateScrollIndicators, { passive: true });
+        window.addEventListener('scroll', onScroll, { passive: true });
         
         // 监听窗口大小变化
         window.addEventListener('resize', updateScrollIndicators, { passive: true });
@@ -296,23 +317,23 @@ import {Icon} from "astro-icon/components";
         // 初始化
         updateScrollIndicators();
         
-        console.log('BackToTop: Initialized successfully');
+        console.log('BackToTop: Initialized successfully!');
     }
     
     // 页面加载时初始化
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initScrollFeatures);
     } else {
-        initScrollFeatures();
+        setTimeout(initScrollFeatures, 100);
     }
     
     // Swup 页面切换时重新初始化
-    document.addEventListener('swup:page:view', () => {
-        setTimeout(initScrollFeatures, 100);
+    document.addEventListener('swup:page:view', function() {
+        setTimeout(initScrollFeatures, 200);
     });
     
-    // 内容加载完成后重新初始化
-    document.addEventListener('astro:page-load', () => {
-        setTimeout(initScrollFeatures, 100);
+    // Astro 页面加载完成后初始化
+    document.addEventListener('astro:page-load', function() {
+        setTimeout(initScrollFeatures, 200);
     });
 </script>

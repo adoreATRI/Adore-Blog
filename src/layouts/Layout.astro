@@ -1211,13 +1211,14 @@ function scrollFunction() {
 
 	// 批量处理DOM操作
 	requestAnimationFrame(() => {
-		if (backToTopBtn) {
-			if (scrollTop > bannerHeight) {
-				backToTopBtn.classList.remove('hide')
-			} else {
-				backToTopBtn.classList.add('hide')
-			}
-		}
+		// BackToTop 组件现在自己管理显示/隐藏，不需要这里控制
+		// if (backToTopBtn) {
+		// 	if (scrollTop > bannerHeight) {
+		// 		backToTopBtn.classList.remove('hide')
+		// 	} else {
+		// 		backToTopBtn.classList.add('hide')
+		// 	}
+		// }
 
 		if (bannerEnabled && toc) {
 			if (scrollTop > bannerHeight) {
