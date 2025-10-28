@@ -3,9 +3,9 @@ import {Icon} from "astro-icon/components";
 ---
 
 <!-- There can't be a filter on parent element, or it will break `fixed` -->
-<div class="back-to-top-wrapper block">
-    <!-- 圆形返回顶部按钮，带进度条 -->
-    <div id="back-to-top-btn" class="back-to-top-btn hide transition"
+<div class="back-to-top-wrapper">
+    <!-- 圆形返回顶部按钮，带进度条和百分比 -->
+    <div id="back-to-top-btn" class="back-to-top-btn hide"
          onclick="backToTop()">
         <svg class="progress-ring" width="50" height="50">
             <circle class="progress-ring-bg" cx="25" cy="25" r="22" />
@@ -13,6 +13,7 @@ import {Icon} from "astro-icon/components";
         </svg>
         <button aria-label="Back to Top" class="btn-circle">
             <Icon name="material-symbols:keyboard-arrow-up-rounded" class="icon-arrow"></Icon>
+            <span id="progress-text" class="progress-text">0%</span>
         </button>
     </div>
     
@@ -44,6 +45,7 @@ import {Icon} from "astro-icon/components";
     opacity: 0
     transform: scale(0.8)
     transition: all 0.3s ease
+    z-index: 101
 
     &:not(.hide)
       opacity: 1
@@ -60,6 +62,7 @@ import {Icon} from "astro-icon/components";
     transform: rotate(-90deg)
     width: 50px
     height: 50px
+    pointer-events: none
     
   .progress-ring-bg
     fill: none
@@ -77,12 +80,9 @@ import {Icon} from "astro-icon/components";
 
   /* 圆形按钮 */
   .btn-circle
-    position: absolute
-    top: 50%
-    left: 50%
-    transform: translate(-50%, -50%)
-    width: 40px
-    height: 40px
+    position: relative
+    width: 50px
+    height: 50px
     border-radius: 50%
     background: var(--card-bg)
     border: none
@@ -98,11 +98,30 @@ import {Icon} from "astro-icon/components";
       background: var(--btn-card-bg-hover)
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2)
       
+      .icon-arrow
+        opacity: 1
+        
+      .progress-text
+        opacity: 0
+      
     &:active
-      transform: translate(-50%, -50%) scale(0.95)
+      transform: scale(0.95)
 
   .icon-arrow
+    position: absolute
     font-size: 1.5rem
+    opacity: 0
+    transition: opacity 0.2s ease
+
+  /* 百分比文字 */
+  .progress-text
+    position: absolute
+    font-size: 11px
+    font-weight: 600
+    color: var(--primary)
+    opacity: 1
+    transition: opacity 0.2s ease
+    user-select: none
 
   /* 文章滚动条 - 紧贴浏览器右边缘 */
   .article-scrollbar
@@ -160,7 +179,7 @@ import {Icon} from "astro-icon/components";
 
 </style>
 
-<script is:raw is:inline>
+<script is:inline>
     function backToTop() {
         window.scroll({top: 0, behavior: 'smooth'});
     }
@@ -169,27 +188,41 @@ import {Icon} from "astro-icon/components";
     function initScrollFeatures() {
         const backToTopBtn = document.getElementById('back-to-top-btn');
         const progressCircle = document.getElementById('progress-circle');
+        const progressText = document.getElementById('progress-text');
         const articleScrollbar = document.getElementById('article-scrollbar');
         const scrollbarThumb = document.getElementById('scrollbar-thumb');
         const scrollbarTrack = articleScrollbar?.querySelector('.scrollbar-track');
         
-        if (!backToTopBtn || !progressCircle || !articleScrollbar || !scrollbarThumb || !scrollbarTrack) {
+        if (!backToTopBtn || !progressCircle || !progressText || !articleScrollbar || !scrollbarThumb || !scrollbarTrack) {
+            console.log('BackToTop: Missing elements');
             return;
         }
         
         const radius = 22;
         const circumference = 2 * Math.PI * radius;
+        progressCircle.style.strokeDasharray = circumference;
         
         let isDragging = false;
         
         function updateScrollIndicators() {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
             const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-            const scrollPercentage = (scrollTop / docHeight) * 100;
+            
+            if (docHeight <= 0) {
+                // 页面太短，隐藏所有控件
+                backToTopBtn.classList.add('hide');
+                articleScrollbar.classList.add('hide');
+                return;
+            }
+            
+            const scrollPercentage = Math.round((scrollTop / docHeight) * 100);
             
             // 更新环形进度条
             const offset = circumference - (scrollPercentage / 100) * circumference;
             progressCircle.style.strokeDashoffset = offset;
+            
+            // 更新百分比文字
+            progressText.textContent = scrollPercentage + '%';
             
             // 获取滚动条实际高度
             const scrollbarHeight = scrollbarTrack.clientHeight;
@@ -262,6 +295,8 @@ import {Icon} from "astro-icon/components";
         
         // 初始化
         updateScrollIndicators();
+        
+        console.log('BackToTop: Initialized successfully');
     }
     
     // 页面加载时初始化
@@ -272,5 +307,12 @@ import {Icon} from "astro-icon/components";
     }
     
     // Swup 页面切换时重新初始化
-    document.addEventListener('swup:page:view', initScrollFeatures);
+    document.addEventListener('swup:page:view', () => {
+        setTimeout(initScrollFeatures, 100);
+    });
+    
+    // 内容加载完成后重新初始化
+    document.addEventListener('astro:page-load', () => {
+        setTimeout(initScrollFeatures, 100);
+    });
 </script>
